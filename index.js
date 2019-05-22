@@ -3,6 +3,8 @@ const FACEBOOK_KEY = 'facebook'
 const URLS_TO_CANCEL = [
     '*://*.facebook.com/ajax/mercury/change_read_status.php*',
     '*://*.instagram.com/stories/reel/seen',
+    '*://*.instagram.com/ajax/bz*',
+    '*://*.instagram.com/qp/batch_fetch_web*',
 ]
 
 const isNodeEnv = typeof exports !== 'undefined'
@@ -19,12 +21,13 @@ const shouldCancelRequest = (url, storage) => {
             // See: https://github.com/diessica/no-seen/issues/2
             return true
         }
-
         return url.includes(key) && storage.get().then(s => s[key] !== false)
     }
-
+    if (isCancellable(INSTAGRAM_KEY)) {
+       console.debug('Should cancel:', url);
+    }
     return {
-        cancel: [FACEBOOK_KEY, INSTAGRAM_KEY].some(isCancellable),
+        cancel: isCancellable(INSTAGRAM_KEY),
     }
 }
 
